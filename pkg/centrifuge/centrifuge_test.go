@@ -1,4 +1,4 @@
-package core_test
+package centrifuge_test
 
 import (
 	"archive/zip"
@@ -10,8 +10,10 @@ import (
 	"testing"
 
 	"github.com/galaco/bsp"
-	"github.com/saiko-tech/csgo-overviews-all-versions/internal/core"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/saiko-tech/bsp-centrifuge/pkg/centrifuge"
+	"github.com/saiko-tech/bsp-centrifuge/pkg/steamapi"
 )
 
 func TestCore(t *testing.T) {
@@ -20,7 +22,7 @@ func TestCore(t *testing.T) {
 	f, err := bsp.ReadFromFile(bspFilePath)
 	assert.NoErrorf(t, err, "failed to open BSP file %q", bspFilePath)
 
-	err = core.ExtractRadarImages(f, filepath.Join(os.TempDir(), "radar-overviews"))
+	err = centrifuge.ExtractDdsFiles(f, filepath.Join(os.TempDir(), "radar-overviews"))
 	assert.NoError(t, err, "failed to extract radar images from BSP file %q", bspFilePath)
 }
 
@@ -48,7 +50,7 @@ func TestDownload(t *testing.T) {
 	assert.NoErrorf(t, err, "failed to create target file for download %q", fDownload.Name())
 	defer f.Close()
 
-	err = core.DownloadWorkshopItem(tab.Maps[0].WorkshopID, fDownload)
+	err = steamapi.DownloadWorkshopItem(tab.Maps[0].WorkshopID, fDownload)
 	assert.NoErrorf(t, err, "failed to download workshop item %q", tab.Maps[0].WorkshopID)
 }
 
@@ -67,7 +69,7 @@ func TestE2E(t *testing.T) {
 	var buf bytes.Buffer
 
 	workshopID := tab.Maps[0].WorkshopID
-	err = core.DownloadWorkshopItem(workshopID, &buf)
+	err = steamapi.DownloadWorkshopItem(workshopID, &buf)
 	assert.NoErrorf(t, err, "failed to download workshop item %q", workshopID)
 
 	b := buf.Bytes()
@@ -84,7 +86,7 @@ func TestE2E(t *testing.T) {
 			bsp, err := bsp.ReadFromStream(bspR)
 			assert.NoErrorf(t, err, "failed to read BSP data from zip file stream %q", zipF.Name)
 
-			err = core.ExtractRadarImages(bsp, filepath.Join(os.TempDir(), "radar-overviews"))
+			err = centrifuge.ExtractDdsFiles(bsp, filepath.Join(os.TempDir(), "radar-overviews"))
 			assert.NoErrorf(t, err, "failed to extract radar images from BSP data of file %q", zipF.Name)
 		}
 	}

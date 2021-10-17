@@ -1,66 +1,12 @@
-package core
+package steamapi
 
 import (
-	"archive/zip"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"os"
-	"path/filepath"
-
-	"github.com/galaco/bsp"
-	"github.com/pkg/errors"
 )
-
-func extractRadarImage(f *zip.File, targetDir string) error {
-	r, err := f.Open()
-	if err != nil {
-		return errors.Wrapf(err, "failed to open DDS file %q from archive", f.Name)
-	}
-	defer r.Close()
-
-	ddsFileName := filepath.Join(targetDir, filepath.Base(f.Name))
-	ddsF, err := os.Create(ddsFileName)
-	if err != nil {
-		return errors.Wrapf(err, "failed to create DDS file %q on disk", ddsFileName)
-	}
-	defer ddsF.Close()
-
-	_, err = io.Copy(ddsF, r)
-	if err != nil {
-		return errors.Wrapf(err, "failed to write DDS data to file %q", ddsFileName)
-	}
-
-	return nil
-}
-
-func ExtractRadarImages(f *bsp.Bsp, targetDir string) error {
-	err := os.MkdirAll(targetDir, 0744)
-	if err != nil {
-		return errors.Wrapf(err, "failed to create target dir %q", targetDir)
-	}
-
-	b := f.RawLump(bsp.LumpPakfile).RawContents()
-	r := bytes.NewReader(b)
-	zipR, err := zip.NewReader(r, int64(len(b)))
-	if err != nil {
-		return errors.Wrapf(err, "failed to open Pakfile lump")
-	}
-
-	for _, pakF := range zipR.File {
-		if filepath.Ext(pakF.Name) == ".dds" {
-			err := extractRadarImage(pakF, targetDir)
-			if err != nil {
-				return errors.Wrapf(err, "failed to extract radar image %q", pakF.Name)
-			}
-		}
-	}
-
-	return nil
-}
 
 type GetPublishedFileDetailsResponse struct {
 	Response struct {
