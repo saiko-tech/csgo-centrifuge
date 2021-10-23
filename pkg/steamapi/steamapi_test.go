@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/saiko-tech/bsp-centrifuge/pkg/steamapi"
+	"github.com/saiko-tech/csgo-centrifuge/pkg/steamapi"
 	"github.com/stretchr/testify/assert"
 )
 

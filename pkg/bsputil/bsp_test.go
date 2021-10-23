@@ -14,8 +14,8 @@ import (
 	"github.com/galaco/bsp"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/saiko-tech/bsp-centrifuge/pkg/bsputil"
-	"github.com/saiko-tech/bsp-centrifuge/pkg/steamapi"
+	"github.com/saiko-tech/csgo-centrifuge/pkg/bsputil"
+	"github.com/saiko-tech/csgo-centrifuge/pkg/steamapi"
 )
 
 func TestCore(t *testing.T) {

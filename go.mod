@@ -1,4 +1,4 @@
-module github.com/saiko-tech/bsp-centrifuge
+module github.com/saiko-tech/csgo-centrifuge
 
 go 1.17
 

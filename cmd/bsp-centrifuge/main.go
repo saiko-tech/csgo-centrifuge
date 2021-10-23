@@ -15,9 +15,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 
-	"github.com/saiko-tech/bsp-centrifuge/pkg/bsputil"
-	"github.com/saiko-tech/bsp-centrifuge/pkg/crc"
-	"github.com/saiko-tech/bsp-centrifuge/pkg/steamapi"
+	"github.com/saiko-tech/csgo-centrifuge/pkg/bsputil"
+	"github.com/saiko-tech/csgo-centrifuge/pkg/crc"
+	"github.com/saiko-tech/csgo-centrifuge/pkg/steamapi"
 )
 
 func pathToBsp(path string) (*bsp.Bsp, error) {

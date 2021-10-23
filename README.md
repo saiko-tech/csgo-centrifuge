@@ -1,4 +1,4 @@
-# bsp-centrifuge
+# csgo-centrifuge
 
 Go API & CLI for downloading and extracting data from BSP files
 
