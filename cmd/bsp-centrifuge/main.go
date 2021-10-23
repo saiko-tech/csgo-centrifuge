@@ -3,6 +3,7 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -14,7 +15,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 
-	"github.com/saiko-tech/bsp-centrifuge/pkg/centrifuge"
+	"github.com/saiko-tech/bsp-centrifuge/pkg/bsputil"
+	"github.com/saiko-tech/bsp-centrifuge/pkg/crc"
 	"github.com/saiko-tech/bsp-centrifuge/pkg/steamapi"
 )
 
@@ -36,8 +38,8 @@ func pathToBsp(path string) (*bsp.Bsp, error) {
 	return bspF, nil
 }
 
-func extractPakfile(bspFile, targetFile string) error {
-	bspF, err := pathToBsp(bspFile)
+func extractPakfile(bspPath, outPath string) error {
+	bspF, err := pathToBsp(bspPath)
 	if err != nil {
 		return errors.Wrap(err, "failed to read BSP data")
 	}
@@ -46,12 +48,12 @@ func extractPakfile(bspFile, targetFile string) error {
 	r := bytes.NewReader(b)
 
 	var w io.Writer
-	if targetFile == "-" {
+	if outPath == "-" {
 		w = os.Stdout
 	} else {
-		f, err := os.Create(targetFile)
+		f, err := os.Create(outPath)
 		if err != nil {
-			return errors.Wrapf(err, "failed to create target file: %q", targetFile)
+			return errors.Wrapf(err, "failed to create out file: %q", outPath)
 		}
 		defer f.Close()
 
@@ -66,16 +68,16 @@ func extractPakfile(bspFile, targetFile string) error {
 	return nil
 }
 
-func extractFile(zipR *zip.Reader, file, targetFile string) error {
+func extractFile(zipR *zip.Reader, file, outPath string) error {
 	f, err := zipR.Open(file)
 	if err != nil {
 		return errors.Wrapf(err, "failed to open file %q in zip", file)
 	}
 	defer f.Close()
 
-	fOut, err := os.Create(targetFile)
+	fOut, err := os.Create(outPath)
 	if err != nil {
-		return errors.Wrapf(err, "failed to create target file %q", targetFile)
+		return errors.Wrapf(err, "failed to create out file %q", outPath)
 	}
 	defer fOut.Close()
 
@@ -84,35 +86,35 @@ func extractFile(zipR *zip.Reader, file, targetFile string) error {
 	return nil
 }
 
-func extractRadarOverview(bspFile, targetDir string) error {
-	bspF, err := pathToBsp(bspFile)
+func extractRadarOverview(bspPath, outDirPath string) error {
+	bspF, err := pathToBsp(bspPath)
 	if err != nil {
 		return errors.Wrap(err, "failed to read BSP data")
 	}
 
-	pakfile, err := centrifuge.Pakfile(bspF)
+	pakfile, err := bsputil.Pakfile(bspF)
 	if err != nil {
 		return errors.Wrap(err, "failed to read pakfile data")
 	}
 
-	mapName, err := centrifuge.GetMapName(pakfile)
+	mapName, err := bsputil.GetMapName(pakfile)
 	if err != nil {
 		return errors.Wrap(err, "failed to get map name from pakfile")
 	}
 
-	err = os.MkdirAll(targetDir, 0777)
+	err = os.MkdirAll(outDirPath, 0777)
 	if err != nil {
-		return errors.Wrapf(err, "failed to create target dir %q", targetDir)
+		return errors.Wrapf(err, "failed to create out dir %q", outDirPath)
 	}
 
 	ddsPath := fmt.Sprintf("resource/overviews/%s_radar.dds", mapName)
-	err = extractFile(pakfile, ddsPath, filepath.Join(targetDir, fmt.Sprintf("%s_radar.dds", mapName)))
+	err = extractFile(pakfile, ddsPath, filepath.Join(outDirPath, fmt.Sprintf("%s_radar.dds", mapName)))
 	if err != nil {
 		return errors.Wrapf(err, "failed to extract file %q from pakfile", ddsPath)
 	}
 
 	txtPath := fmt.Sprintf("resource/overviews/%s.txt", mapName)
-	err = extractFile(pakfile, txtPath, filepath.Join(targetDir, fmt.Sprintf("%s.txt", mapName)))
+	err = extractFile(pakfile, txtPath, filepath.Join(outDirPath, fmt.Sprintf("%s.txt", mapName)))
 	if err != nil {
 		return errors.Wrapf(err, "failed to extract file %q from pakfile", txtPath)
 	}
@@ -120,18 +122,18 @@ func extractRadarOverview(bspFile, targetDir string) error {
 	return nil
 }
 
-func download(workshopFileID int, targetFile string) error {
+func download(workshopFileID int, outPath string) error {
 	var (
 		w   io.Writer
 		err error
 	)
 
-	if targetFile == "-" {
+	if outPath == "-" {
 		w = os.Stdout
 	} else {
-		f, err := os.Create(targetFile)
+		f, err := os.Create(outPath)
 		if err != nil {
-			return errors.Wrapf(err, "failed to create target file: %q", targetFile)
+			return errors.Wrapf(err, "failed to create out file: %q", outPath)
 		}
 		defer f.Close()
 
@@ -146,28 +148,60 @@ func download(workshopFileID int, targetFile string) error {
 	return nil
 }
 
+func extractCRCTable(engineClientSOPath, outPath string) error {
+	r, err := os.Open(engineClientSOPath)
+	if err != nil {
+		return errors.Wrapf(err, "failed to open enginge_client.so file %q", engineClientSOPath)
+	}
+
+	var w io.Writer
+	if outPath == "-" {
+		w = os.Stdout
+	} else {
+		f, err := os.Create(outPath)
+		if err != nil {
+			return errors.Wrapf(err, "failed to create output file: %q", outPath)
+		}
+		defer f.Close()
+
+		w = f
+	}
+
+	tab, err := crc.ExtractCRCTable(r)
+	if err != nil {
+		return errors.Wrapf(err, "failed to extract CRC table from engine_client.so file %q", engineClientSOPath)
+	}
+
+	err = json.NewEncoder(w).Encode(tab)
+	if err != nil {
+		return errors.Wrapf(err, "failed to encode CRC table as JSON to output file %q", outPath)
+	}
+
+	return nil
+}
+
 func main() {
 	var (
-		bspFile     string
-		bspFileFlag = &cli.StringFlag{
-			Name:        "bsp-file",
+		inFile     string
+		inFileFlag = &cli.StringFlag{
+			Name:        "in-file",
 			Value:       "-",
-			Usage:       "BSP file from which to extract data",
-			Destination: &bspFile,
+			Usage:       "Input file from which to extract data",
+			Destination: &inFile,
 		}
-		targetFile     string
-		targetFileFlag = &cli.StringFlag{
-			Name:        "target-file",
+		outFile     string
+		outFileFlag = &cli.StringFlag{
+			Name:        "out-file",
 			Value:       "-",
-			Usage:       "Target file to which to save the data, if applicable",
-			Destination: &targetFile,
+			Usage:       "Output file to which to save the data",
+			Destination: &outFile,
 		}
-		targetDir     string
-		targetDirFlag = &cli.StringFlag{
-			Name:        "target-dir",
+		outDir     string
+		outDirFlag = &cli.StringFlag{
+			Name:        "output-dir",
 			Value:       "out",
-			Usage:       "Target directory to which to save the data, if applicable",
-			Destination: &targetDir,
+			Usage:       "Output directory to which to save the data",
+			Destination: &outDir,
 		}
 		workshopFileID int
 	)
@@ -175,25 +209,40 @@ func main() {
 	var ()
 
 	app := &cli.App{
-		Name:  "bsp-centrifuge",
-		Usage: "extract interesting data from BSP (Binary-Space-Partition - source-engine maps) files",
+		Name:  "csgo-centrifuge",
+		Usage: "process CSGO game files in (hopefully) interesting ways",
 		Commands: []*cli.Command{
 			{
-				Name:    "pakfile",
-				Aliases: []string{"pak"},
-				Usage:   "extract the Pakfile zip",
-				Flags:   []cli.Flag{bspFileFlag, targetFileFlag},
+				Name:    "crc-table",
+				Aliases: []string{"crc"},
+				Usage:   "extract the CRC table from bin/linux64/engine_client.so",
+				Flags:   []cli.Flag{inFileFlag, outFileFlag},
 				Action: func(c *cli.Context) error {
-					return extractPakfile(bspFile, targetFile)
+					return extractCRCTable(inFile, outFile)
 				},
 			},
 			{
-				Name:    "radar-image",
-				Aliases: []string{"radar"},
-				Usage:   "extract radar overview image (.dds file) and the corresponding info (.txt file)",
-				Flags:   []cli.Flag{bspFileFlag, targetDirFlag},
-				Action: func(c *cli.Context) error {
-					return extractRadarOverview(bspFile, targetDir)
+				Name:  "bsp",
+				Usage: "extract interesting data from BSP (Binary-Space-Partition - source-engine maps) files",
+				Subcommands: []*cli.Command{
+					{
+						Name:    "pakfile",
+						Aliases: []string{"pak"},
+						Usage:   "extract the Pakfile zip",
+						Flags:   []cli.Flag{inFileFlag, outFileFlag},
+						Action: func(c *cli.Context) error {
+							return extractPakfile(inFile, outFile)
+						},
+					},
+					{
+						Name:    "radar-image",
+						Aliases: []string{"radar"},
+						Usage:   "extract radar overview image (.dds file) and the corresponding info (.txt file)",
+						Flags:   []cli.Flag{inFileFlag, outDirFlag},
+						Action: func(c *cli.Context) error {
+							return extractRadarOverview(inFile, outDir)
+						},
+					},
 				},
 			},
 			{
@@ -209,7 +258,7 @@ func main() {
 					},
 				},
 				Action: func(c *cli.Context) error {
-					return download(workshopFileID, targetFile)
+					return download(workshopFileID, outFile)
 				},
 			},
 		},

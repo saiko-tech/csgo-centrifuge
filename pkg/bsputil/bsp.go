@@ -1,4 +1,4 @@
-package centrifuge
+package bsputil
 
 import (
 	"archive/zip"
