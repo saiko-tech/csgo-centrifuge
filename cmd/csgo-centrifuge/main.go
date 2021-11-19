@@ -169,6 +169,7 @@ func extractCRCTable(engineClientSOPath, outPath string) error {
 
 	tab, err := crc.ExtractCRCTable(r)
 	if err != nil {
+		fmt.Printf("%+v\n", err)
 		return errors.Wrapf(err, "failed to extract CRC table from engine_client.so file %q", engineClientSOPath)
 	}
 
