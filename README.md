@@ -27,3 +27,7 @@ GLOBAL OPTIONS:
 ### API
 
 TODO ...
+
+### Acknowledgements
+
+Massive thanks to [@rogerxiii](https://github.com/rogerxiii) for the proof of concept & help along the way!
