@@ -20,6 +20,8 @@ We provide a free public service to get any radar image and map-info file easily
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/radar.png`
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/info.txt` - VDF format (Valve Data Format)
 
+ℹ️ See further down on [how to get the `<crc>` value](#how-to-get-the-map-crc-code).
+
 #### Examples
 
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/radar.dds
@@ -57,7 +59,7 @@ GLOBAL OPTIONS:
 
 If you have installed `csgo-centrifuge`, [`cq`](https://github.com/markus-wa/cq) & [ImageMagick](https://imagemagick.org/index.php)'s `convert` you can do the following to get the correct radar image from a map_crc code.
 
-See further down on [how to get the map_crc code](#how-to-get-the-map-crc-code)
+See further down on [how to get the map_crc code](#how-to-get-the-map-crc-code).
 
 ```terminal
 $ map_crc=2895852907
