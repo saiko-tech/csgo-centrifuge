@@ -11,6 +11,7 @@ Can be used to get radar-overviews for all historic map versions of CS:GO.
 
 We provide a free public service to get any radar image and map-info file easily.
 
+⚠️ Currently the very latest map versions are not supported - so you need to use a fall-back image in case the requested radar image is missing (i.e. when you get a HTTP 404 error)!
 
 ### Usage
 
