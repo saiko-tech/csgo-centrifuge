@@ -57,7 +57,7 @@ GLOBAL OPTIONS:
 
 If you have installed `csgo-centrifuge`, [`cq`](https://github.com/markus-wa/cq) & [ImageMagick](https://imagemagick.org/index.php)'s `convert` you can do the following to get the correct radar image from a map_crc code.
 
-See further down on [how to get the map_crc code]()
+See further down on [how to get the map_crc code](#how-to-get-the-map-crc-code)
 
 ```terminal
 $ map_crc=2895852907
