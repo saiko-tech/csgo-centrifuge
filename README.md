@@ -1,6 +1,7 @@
 # csgo-centrifuge
 
-Go API & CLI for downloading and extracting data from BSP files
+Go API & CLI for downloading and extracting data from BSP files.
+Can be used to get radar-overviews for all historic map versions of CS:GO.
 
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/saiko-tech/csgo-centrifuge/pkg?tab=doc)
 [![Go Report](https://goreportcard.com/badge/github.com/saiko-tech/csgo-centrifuge?style=flat-square)](https://goreportcard.com/report/github.com/saiko-tech/csgo-centrifuge)
