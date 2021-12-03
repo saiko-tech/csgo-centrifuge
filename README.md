@@ -6,6 +6,23 @@ Go API & CLI for downloading and extracting data from BSP files
 [![Go Report](https://goreportcard.com/badge/github.com/saiko-tech/csgo-centrifuge?style=flat-square)](https://goreportcard.com/report/github.com/saiko-tech/csgo-centrifuge)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 
+## Installation (CLI)
+
+	go install github.com/saiko-tech/csgo-centrifuge/cmd/csgo-centrifuge@latest
+
+## Go Get (Library / API)
+
+### BSP Utils (Radar Extraction)
+
+	go get github.com/saiko-tech/csgo-centrifuge/pkg/bsputil@latest
+	
+### CRC Table Extraction
+
+	go get github.com/saiko-tech/csgo-centrifuge/pkg/crc@latest
+	
+### Steam API (Workshop Downloads)
+	go get github.com/saiko-tech/csgo-centrifuge/pkg/steamapi@latest
+
 ## Usage
 
 ### CLI
@@ -68,7 +85,7 @@ And then you get the following image `de_cache_radar.png`:
    <img alt="sample output radar image" src="https://user-images.githubusercontent.com/5138316/144641388-46b1744e-01fc-48be-b5b7-065cf2e4c6cf.png" width="50%">
 </p>
 
-### API
+### Library / API
 
 See [API docs](https://pkg.go.dev/github.com/saiko-tech/csgo-centrifuge/pkg?tab=doc).
 
