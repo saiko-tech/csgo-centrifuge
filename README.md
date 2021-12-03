@@ -18,7 +18,7 @@ We provide a free public service to get any radar image and map-info file easily
 The public service does not offer any uptime or compatibility guarantees.
 It also doesn't allow listing/indexing of all map versions or access to the BSP files.
 
-If you are interested in a business-grade service please get in touch - you can find contact details on the [saiko.tech](https://saiko.tech/) website.
+If you are interested in a business-grade service (and many more features!) please get in touch - you can find contact details on the [saiko.tech](https://saiko.tech/) website.
 
 ### Usage
 
