@@ -24,8 +24,9 @@ If you are interested in a business-grade service (and many more features!) plea
 
 #### URL Formats
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/radar.dds`
-- `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/radar.png`
+- `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/radar.png` - `radar.dds` converted to PNG (smaller, same quality)
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/info.txt` - VDF format (Valve Data Format)
+- `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/info.json` - `info.txt` converted to JSON (easier to work with)
 
 ℹ️ See further down on [how to get the `<crc>` value](#how-to-get-the-map-crc-code).
 
@@ -34,6 +35,7 @@ If you are interested in a business-grade service (and many more features!) plea
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/radar.dds
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/radar.png
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/info.txt
+- https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/info.json
 
 
 ## CLI
