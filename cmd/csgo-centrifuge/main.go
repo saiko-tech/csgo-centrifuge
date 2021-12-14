@@ -68,6 +68,22 @@ func extractPakfile(bspPath, outPath string) error {
 	return nil
 }
 
+func crc32Bsp(bspPath string) error {
+	bspF, err := pathToBsp(bspPath)
+	if err != nil {
+		return errors.Wrap(err, "failed to read BSP data")
+	}
+
+	crc, err := bspF.CRC32()
+	if err != nil {
+		return errors.Wrap(err, "failed to calculate CRC32 sum for BSP file")
+	}
+
+	fmt.Println(crc)
+
+	return nil
+}
+
 func extractFile(zipR *zip.Reader, file, outPath string) error {
 	f, err := zipR.Open(file)
 	if err != nil {
@@ -244,6 +260,14 @@ func main() {
 							return extractRadarOverview(inFile, outDir)
 						},
 					},
+					{
+						Name:    "crc32",
+						Usage:   "calculate CRC32 sum of .bsp file",
+						Flags:   []cli.Flag{inFileFlag},
+						Action: func(c *cli.Context) error {
+							return crc32Bsp(inFile)
+						},
+					},
 				},
 			},
 			{
@@ -257,6 +281,7 @@ func main() {
 						Usage:       "Steam workshop file id to download, if applicable",
 						Destination: &workshopFileID,
 					},
+					outFileFlag,
 				},
 				Action: func(c *cli.Context) error {
 					return download(workshopFileID, outFile)
