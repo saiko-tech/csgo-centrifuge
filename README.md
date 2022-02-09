@@ -11,13 +11,6 @@ Can be used to get radar-overviews for all historic map versions of CS:GO.
 
 We provide a free public service to get any radar image and map-info file easily.
 
-### Limitations / Contact
-
-The public service does not offer any uptime or compatibility guarantees.
-It also doesn't allow listing/indexing of all map versions or access to the BSP files.
-
-If you are interested in a business-grade service (and many more features!) please get in touch - you can find contact details on the [saiko.tech](https://saiko.tech/) website.
-
 ### Usage
 
 #### URL Formats
@@ -35,6 +28,12 @@ If you are interested in a business-grade service (and many more features!) plea
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/info.txt
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/info.json
 
+### Limitations / Contact
+
+The public service does not offer any uptime or compatibility guarantees.
+It also doesn't allow listing/indexing of all map versions or access to the BSP files.
+
+If you are interested in a business-grade service (and many more features!) please get in touch - you can find contact details on the [saiko.tech](https://saiko.tech/) website.
 
 ## CLI
 
