@@ -18,6 +18,7 @@ We provide a free public service to get any radar image and map-info file easily
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/radar.png` - `radar.dds` converted to PNG (smaller, same quality)
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/info.txt` - VDF format (Valve Data Format)
 - `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/info.json` - `info.txt` converted to JSON (easier to work with)
+- `https://radar-overviews.csgo.saiko.tech/<map>/<crc>/nav.nav` - `<map>.nav`- see https://developer.valvesoftware.com/wiki/Nav_Mesh and https://developer.valvesoftware.com/wiki/NAV
 
 ℹ️ See further down on [how to get the `<crc>` value](#how-to-get-the-map-crc-code).
 
@@ -27,6 +28,7 @@ We provide a free public service to get any radar image and map-info file easily
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/radar.png
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/info.txt
 - https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/info.json
+- https://radar-overviews.csgo.saiko.tech/cs_agency/2230463619/nav.nav
 
 ### Limitations / Contact
 
