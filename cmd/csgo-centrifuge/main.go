@@ -10,8 +10,10 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/galaco/bsp"
+	"github.com/galaco/vpk2"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 
@@ -197,11 +199,75 @@ func extractCRCTable(engineClientSOPath, outPath string) error {
 	return nil
 }
 
+func lsVPK(prefix string) error {
+	vpkOpener := vpk.MultiVPK(prefix)
+
+	vpkF, err := vpk.Open(vpkOpener)
+	if err != nil {
+		return errors.Wrap(err, "failed to open VPK")
+	}
+
+	for _, file := range vpkF.Paths() {
+		fmt.Println(file)
+	}
+
+	return nil
+}
+
+func extractVPK(vpkPrefix, outDir, filterPrefix string) error {
+	vpkOpener := vpk.MultiVPK(vpkPrefix)
+
+	vpkF, err := vpk.Open(vpkOpener)
+	if err != nil {
+		return errors.Wrap(err, "failed to open VPK")
+	}
+
+	for _, file := range vpkF.Paths() {
+		if !strings.HasPrefix(file, filterPrefix) {
+			continue
+		}
+
+		err := extractVPKFile(vpkF, file, outDir)
+		if err != nil {
+			return errors.Wrapf(err, "failed to extract file %q in VPK", file)
+		}
+	}
+
+	return nil
+}
+
+func extractVPKFile(vpkF *vpk.VPK, file string, outDir string) error {
+	f, err := vpkF.Open(file)
+	if err != nil {
+		return errors.Wrapf(err, "failed to open file %q in VPK", file)
+	}
+	defer f.Close()
+
+	outPath := filepath.Join(outDir, file)
+	err = os.MkdirAll(filepath.Dir(outPath), 0777)
+	if err != nil {
+		return errors.Wrapf(err, "failed to create out dir %q", filepath.Dir(outPath))
+	}
+
+	fOut, err := os.Create(outPath)
+	if err != nil {
+		return errors.Wrapf(err, "failed to create out file %q", outPath)
+	}
+
+	_, err = io.Copy(fOut, f)
+	if err != nil {
+		return errors.Wrapf(err, "failed to copy file %q to out file %q", file, outPath)
+	}
+
+	return nil
+}
+
 func main() {
 	var (
 		inFile     string
 		inFileFlag = &cli.StringFlag{
 			Name:        "in-file",
+			Aliases:     []string{"i"},
 			Value:       "-",
 			Usage:       "Input file from which to extract data",
 			Destination: &inFile,
@@ -209,6 +275,7 @@ func main() {
 		outFile     string
 		outFileFlag = &cli.StringFlag{
 			Name:        "out-file",
+			Aliases:     []string{"o"},
 			Value:       "-",
 			Usage:       "Output file to which to save the data",
 			Destination: &outFile,
@@ -216,14 +283,14 @@ func main() {
 		outDir     string
 		outDirFlag = &cli.StringFlag{
 			Name:        "output-dir",
+			Aliases:     []string{"out-dir"},
 			Value:       "out",
 			Usage:       "Output directory to which to save the data",
 			Destination: &outDir,
 		}
 		workshopFileID int
+		prefixFilter   string
 	)
-
-	var ()
 
 	app := &cli.App{
 		Name:  "csgo-centrifuge",
@@ -261,11 +328,43 @@ func main() {
 						},
 					},
 					{
-						Name:    "crc32",
-						Usage:   "calculate CRC32 sum of .bsp file",
-						Flags:   []cli.Flag{inFileFlag},
+						Name:  "crc32",
+						Usage: "calculate CRC32 sum of .bsp file",
+						Flags: []cli.Flag{inFileFlag},
 						Action: func(c *cli.Context) error {
 							return crc32Bsp(inFile)
+						},
+					},
+				},
+			},
+			{
+				Name:  "vpk",
+				Usage: "work with and extract Valve Pak files",
+				Subcommands: []*cli.Command{
+					{
+						Name:  "ls",
+						Usage: "list all files in a .vpk file",
+						Flags: []cli.Flag{inFileFlag},
+						Action: func(c *cli.Context) error {
+							return lsVPK(inFile)
+						},
+					},
+					{
+						Name:    "extract",
+						Usage:   "list all files in a .vpk file",
+						Aliases: []string{"x"},
+						Flags: []cli.Flag{
+							inFileFlag,
+							outDirFlag,
+							&cli.StringFlag{
+								Name:        "prefix",
+								Value:       "",
+								Usage:       "Prefix filter - only extract files that start with this",
+								Destination: &prefixFilter,
+							},
+						},
+						Action: func(c *cli.Context) error {
+							return extractVPK(inFile, outDir, prefixFilter)
 						},
 					},
 				},

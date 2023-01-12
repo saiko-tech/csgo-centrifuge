@@ -5,6 +5,8 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/galaco/bsp v0.3.0 h1:+NngnwLiFEJbvZ2yrva75Veh+zaWtvkN+l4oIGos1t8=
 github.com/galaco/bsp v0.3.0/go.mod h1:DKbfL4GiSQ0RvdbMJAE8q/hP4AvKx4AZM2NQzMgqNe4=
+github.com/galaco/vpk2 v1.0.0 h1:+C44FliOTW2CH+Nz1w1WvtL93hJUUCHEGPcl0z5dBJc=
+github.com/galaco/vpk2 v1.0.0/go.mod h1:jL22XAWuUlYUmONuamxDdbDlGJhuOFkqNRPJwuBA3X8=
 github.com/go-gl/mathgl v1.0.0 h1:t9DznWJlXxxjeeKLIdovCOVJQk/GzDEL7h/h+Ro2B68=
 github.com/go-gl/mathgl v1.0.0/go.mod h1:yhpkQzEiH9yPyxDUGzkmgScbaBVlhC06qodikEM0ZwQ=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
