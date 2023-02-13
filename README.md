@@ -6,6 +6,7 @@ Can be used to get radar-overviews for all historic map versions of CS:GO.
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/saiko-tech/csgo-centrifuge/pkg?tab=doc)
 [![Go Report](https://goreportcard.com/badge/github.com/saiko-tech/csgo-centrifuge?style=flat-square)](https://goreportcard.com/report/github.com/saiko-tech/csgo-centrifuge)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
+[![Better Uptime Badge](https://betteruptime.com/status-badges/v1/monitor/mgn5.svg)](https://betteruptime.com/?utm_source=status_badge)
 
 ## API / Public Service
 
